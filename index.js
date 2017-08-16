@@ -10,7 +10,7 @@ Organization.prototype.toString = function organizationToString(){
     return ret;
 }
 
-Organization.prototype.showOrganization =function showOrganization(){
+Organization.prototype.showOrganization = function showOrganization(){
     document.getElementById("organization_title").innerHTML = org.title;
     document.getElementById("usd_ask").innerHTML = org.usd_ask;
     document.getElementById("usd_bid").innerHTML = org.usd_bid;
