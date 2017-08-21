@@ -7,7 +7,12 @@ function DBService(name){
 
 DBService.prototype.connectToDB = function connectToDB() {
      db = new sqlite3.Database('./db/CurrencyApp.db');
-    console.log("Connected to DB");
+     console.log("Connected to DB");
+};
+
+DBService.prototype.closeDBConnection = function closeDBConnection() {
+    db.close();
+    console.log("Connection to DB closed");
 };
 
 module.exports = DBService;
