@@ -1,14 +1,13 @@
 ﻿var http = require('http');
-var request = require("request")
+var request = require("request");
 var express = require('express');
 var fs = require('fs');
-var sqlite3 = require('sqlite3').verbose();
-var Databases = require('./database');
+var DbSevice = require('./DBSerice');
 var Organization = require('./organization');
 var url = "http://resources.finance.ua/ua/public/currency-cash.json";
-var organizations;
-var organizationsInDB;
-let newDb = new Databases("DB");
+
+var dbSevice = new DbSevice("DB");
+var report;
 
 request({
     url: url,
@@ -16,21 +15,15 @@ request({
 }, function (error, response, body) {
     if (!error && response.statusCode === 200) {
 		organizations = body.organizations;
-
+		report = body;
+        dbSevice.connectToDB();
+        dbSevice.createTables();
+    	dbSevice.saveReport(report);
+		dbSevice.closeDBConnection();
 	}
-	var db = new sqlite3.Database('./db/CurrencyApp.db');
-	
-	for (i = 0; i < organizations.length; i++) {
-		if(organizations[i].currencies.USD != undefined) {
-			newDb.addOrg(db, organizations[i], body);
-		};
-	} 
-	db.each("SELECT id AS id, title as title, usd_ask as ask, usd_bid as bid FROM organizations", function(err, row) {
-      console.log(row.id + ": " + row.title + " " + row.ask  + " " + row.bid);
-			
-	});
-	db.close();
 });
+
+
 
 http.createServer(function (req, res) {
     res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
